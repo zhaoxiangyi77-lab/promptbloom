@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: promptbloom-api
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: QWEN_MODEL
+        value: qwen-vl-plus
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: DASHSCOPE_API_KEY
+        sync: false

@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PromptBloom｜AI图片提示词管理工具 v24 UI修正版</title>
+<style>
+:root{
+  --bg:#100205;--bg2:#23070b;--panel:rgba(63,10,16,.72);--panel2:rgba(105,18,28,.48);--line:rgba(255,91,123,.25);
+  --text:#ffece4;--muted:#c99a91;--soft:#f4cab8;--red:#e72d58;--red2:#a40e21;--gold:#ffd18a;--green:#54e18b;
+  --shadow:0 28px 80px rgba(0,0,0,.36);--glow:0 0 36px rgba(231,45,88,.42);--radius:26px;--radius2:18px;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:var(--text);background:#0c0204;overflow:hidden}button,input,textarea,select{font:inherit;color:inherit}button{border:0;cursor:pointer}.hidden{display:none!important}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 16% 10%,rgba(255,50,115,.22),transparent 28%),radial-gradient(circle at 80% 0%,rgba(255,170,80,.12),transparent 25%),linear-gradient(120deg,#0e0205 0%,#240408 52%,#120205 100%);z-index:-3}body:after{content:"";position:fixed;inset:0;background-image:linear-gradient(rgba(255,95,120,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,95,120,.04) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at center,black,transparent 82%);z-index:-2}.noise{position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 90%,rgba(255,50,90,.12),transparent 30%);z-index:-1}
+.app{height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);background:linear-gradient(180deg,rgba(42,4,10,.78),rgba(24,2,6,.88));backdrop-filter:blur(18px);padding:24px 20px;display:flex;flex-direction:column;gap:22px}.brand{display:flex;gap:14px;align-items:center}.brand img{width:58px;height:58px;filter:drop-shadow(0 0 20px rgba(255,60,110,.52))}.brand h1{margin:0;font-size:22px}.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}.nav{display:flex;flex-direction:column;gap:10px;margin-top:16px}.nav button{height:52px;border-radius:16px;background:transparent;color:#f3cabd;text-align:left;padding:0 18px;font-weight:700;letter-spacing:.5px}.nav button:hover,.nav button.active{background:linear-gradient(90deg,rgba(231,45,88,.95),rgba(255,190,100,.18));box-shadow:var(--glow);color:white}.user-card{margin-top:auto;border:1px solid rgba(255,209,138,.28);background:linear-gradient(145deg,rgba(255,224,160,.18),rgba(72,8,14,.78));border-radius:22px;padding:16px;box-shadow:0 18px 44px rgba(0,0,0,.25)}.side-api-title{display:flex;align-items:center;gap:10px;margin-bottom:12px}.side-api-title .api-icon{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#ffe1a3,#e72d58);color:#3b0508;font-weight:900}.side-api-title b{font-size:18px}.side-api-title span{display:block;font-size:12px;color:#ffd5bd;margin-top:3px}.api-mini{border:1px solid rgba(255,209,138,.18);background:rgba(34,4,8,.42);border-radius:15px;padding:11px;margin:10px 0;color:#ffd9c8;font-size:13px;line-height:1.6}.side-card-actions{display:grid;grid-template-columns:1fr;gap:9px}.side-card-actions button{height:38px;border-radius:12px;background:rgba(255,209,138,.13);border:1px solid rgba(255,209,138,.26);color:#ffe8c6;font-weight:800}.side-card-actions button.primary{background:linear-gradient(135deg,#ffd18a,#e63a55);color:#3b0508}
+.main{min-width:0;height:100vh;padding:22px 26px;display:flex;flex-direction:column;gap:18px}.main.compose-mode .topbar{grid-template-columns:auto}.main.compose-mode .topbar .search{display:none}.topbar{display:grid;grid-template-columns:minmax(320px,1fr) auto;gap:18px;align-items:center}.search{height:50px;border:1px solid var(--line);background:rgba(65,8,14,.62);border-radius:18px;display:flex;align-items:center;gap:12px;padding:0 18px;box-shadow:inset 0 0 30px rgba(255,60,100,.04)}.search input{width:100%;background:transparent;border:0;outline:0;color:var(--text)}.search input::placeholder{color:#9d6c66}.top-actions{display:flex;align-items:center;gap:12px}.btn{height:44px;padding:0 18px;border-radius:14px;background:linear-gradient(135deg,#ed2f5d,#9f0a1f);box-shadow:var(--glow);font-weight:800;color:#fff}.btn.ghost{background:rgba(75,10,17,.56);border:1px solid var(--line);box-shadow:none}.btn.yellow{background:linear-gradient(135deg,#ffe1a3,#b43b28);color:#fff}.btn.danger{background:rgba(120,10,26,.48);border:1px solid rgba(255,80,120,.32);box-shadow:none;color:#ffc7d1}.btn.small{height:34px;padding:0 12px;font-size:13px}.icon-btn{width:48px;height:48px;border-radius:16px;background:rgba(75,10,17,.58);border:1px solid var(--line)}
+.content{flex:1;min-height:0;overflow:auto;padding-right:4px}.view{display:none;height:100%}.view.active{display:block}.panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(70,8,14,.68),rgba(32,3,8,.74));border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.section-title h2{margin:0 0 6px;font-size:30px}.section-title p{margin:0;color:var(--muted)}
+.home-grid{display:grid;grid-template-columns:1fr;gap:18px}.hero{height:330px;border-radius:var(--radius);overflow:hidden;position:relative;background:url('assets/bg_valley.png') center/cover}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(25,1,5,.86),rgba(70,8,18,.35),rgba(25,1,5,.12))}.hero-content{position:absolute;z-index:2;left:44px;top:54px;max-width:520px}.hero h1{font-size:48px;margin:0 0 16px;letter-spacing:1px;color:#fff5db;text-shadow:0 0 20px rgba(255,90,110,.35)}.hero p{font-size:18px;color:#ffd8c4;line-height:1.8}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.stat{padding:18px;border-radius:18px;background:rgba(78,12,18,.7);border:1px solid var(--line)}.stat b{font-size:28px}.stat span{display:block;color:var(--muted);margin-top:5px}.quick{padding:18px;display:flex;flex-direction:column;gap:14px}.quick-card{height:92px;border-radius:18px;background:linear-gradient(135deg,rgba(211,25,65,.8),rgba(110,10,22,.64));border:1px solid var(--line);padding:16px;display:flex;justify-content:space-between;align-items:center}.quick-card div b{font-size:18px}.quick-card div p{margin:6px 0 0;color:#ffd1c4;font-size:13px}.recent-home,.tags-home{margin-top:18px;padding:18px}.card-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.img-card{border:1px solid var(--line);background:rgba(72,9,15,.6);border-radius:18px;overflow:hidden;cursor:pointer;transition:.2s}.img-card:hover{transform:translateY(-4px);box-shadow:var(--glow)}.img-card img{width:100%;aspect-ratio:1/1;object-fit:cover}.img-card .cap{padding:10px}.img-card b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pill-row{display:flex;gap:10px;flex-wrap:wrap}.pill{border:1px solid var(--line);background:rgba(122,18,28,.5);border-radius:999px;padding:8px 14px;color:#ffd4c8}
+.upload-grid{height:100%;display:grid;grid-template-columns:minmax(460px,.9fr) minmax(560px,1.1fr);gap:18px}.upload-left,.editor{padding:20px;min-height:0;display:flex;flex-direction:column}.upload-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px}.upload-head-row .section-title{min-width:0}.upload-head-row .btn{white-space:nowrap;margin-top:4px}.editor{background:linear-gradient(180deg,rgba(255,218,144,.52),rgba(255,188,106,.22));border-color:rgba(255,215,140,.48);color:#5a0a12;box-shadow:0 24px 60px rgba(255,172,87,.12)}.editor .section-title p,.editor #editorStatus{color:#7a2c23!important}.editor h2,.editor h3,.editor label{color:#5a0a12!important}.editor .editor-head img{border-color:rgba(255,238,170,.7);box-shadow:0 0 28px rgba(255,208,112,.22)}.drop{height:270px;border:1px dashed rgba(255,90,120,.55);border-radius:22px;display:grid;place-items:center;text-align:center;background:linear-gradient(145deg,rgba(80,10,20,.75),rgba(40,4,10,.78)),url('assets/hero_lotus_red.png') center/cover;position:relative;overflow:hidden}.drop.drag{box-shadow:var(--glow)}.drop input{position:absolute;inset:0;opacity:0}.drop h3{font-size:24px}.recent-list{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.queue{margin-top:16px;display:flex;flex-direction:column;gap:10px}.queue-item{height:62px;border:1px solid var(--line);border-radius:16px;background:rgba(70,8,16,.62);display:flex;align-items:center;gap:12px;padding:8px}.queue-item img{width:46px;height:46px;border-radius:12px;object-fit:cover}.queue-item b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.editor-head{display:flex;gap:16px;align-items:center;margin-bottom:14px}.editor-head img{width:120px;height:120px;border-radius:20px;object-fit:cover;border:1px solid rgba(255,100,130,.35)}.editor-body{flex:1;min-height:0;overflow:auto;padding-right:4px}.field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.field label{color:#f3c8bd;font-weight:800}.field input,.field textarea,.field select{border:1px solid rgba(255,100,130,.26);background:rgba(20,2,6,.46);border-radius:14px;padding:12px 14px;outline:0;color:var(--text)}.editor .field input,.editor .field textarea,.editor .field select{background:rgba(255,248,225,.50);border-color:rgba(120,24,22,.25);color:#4c0710}.editor .field input::placeholder,.editor .field textarea::placeholder{color:rgba(92,20,18,.52)}.field textarea{min-height:118px;resize:vertical}.module-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.editor-foot{border-top:1px solid rgba(120,24,22,.22);padding-top:14px;display:flex;gap:10px;flex-wrap:wrap;background:linear-gradient(180deg,rgba(255,222,151,.08),rgba(255,222,151,.16));border-radius:0 0 18px 18px}.empty-state{height:100%;display:grid;place-items:center;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:22px}
+.assets-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}.filter-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}.filter-bar select,.filter-bar input{height:40px;border-radius:12px;border:1px solid var(--line);background:rgba(50,6,12,.62);padding:0 12px;color:var(--text)}.cat-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}.cat-tabs button{height:38px;border-radius:999px;background:rgba(75,10,17,.55);border:1px solid var(--line);padding:0 16px;color:#ffd4c8}.cat-tabs button.active{background:linear-gradient(135deg,#de254f,#6f0714);box-shadow:var(--glow);color:white}.asset-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}.asset-card{position:relative}.asset-card .tag{position:absolute;left:10px;bottom:54px;background:rgba(230,40,75,.75);border:1px solid rgba(255,180,180,.2);border-radius:999px;padding:5px 9px;font-size:12px}.asset-card .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:4px}.detail-overlay{position:fixed;inset:0;display:none;place-items:center;background:rgba(4,0,2,.52);z-index:20;backdrop-filter:blur(10px)}.detail-overlay.open{display:grid}.detail-card{width:min(980px,92vw);max-height:88vh;overflow:auto;display:grid;grid-template-columns:360px 1fr;gap:22px;padding:22px;position:relative}.detail-card img{width:100%;border-radius:22px;object-fit:cover}.close{position:absolute;right:18px;top:18px;width:38px;height:38px;border-radius:14px;background:rgba(90,10,20,.7);border:1px solid var(--line)}
+.compose-layout{height:100%;display:grid;grid-template-columns:minmax(680px,1fr) 360px;gap:18px}.compose-main,.compose-side{padding:20px;min-height:0;overflow:auto}.compose-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.compose-tabs button{height:38px;padding:0 16px;border-radius:12px;background:rgba(58,8,14,.72);border:1px solid var(--line);font-weight:800}.compose-tabs button.active{background:linear-gradient(135deg,#ed2d58,#830b19);box-shadow:var(--glow)}.subgroup{border:1px solid var(--line);border-radius:18px;background:rgba(70,8,15,.48);margin-bottom:12px;overflow:hidden}.subhead{height:48px;padding:0 16px;display:flex;justify-content:space-between;align-items:center;color:#ffe6dd;font-weight:800}.tags{display:flex;gap:12px;flex-wrap:wrap;padding:0 16px 16px}.tag-btn{height:30px;border-radius:10px;background:rgba(123,20,29,.54);border:1px solid rgba(255,90,120,.25);padding:0 12px;color:#ffd8cf;font-size:13px}.tag-btn:hover,.tag-btn.active{background:#e62d58;color:white;box-shadow:0 0 20px rgba(230,45,88,.28)}.selected{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.selected span{background:rgba(255,200,150,.12);border:1px solid var(--line);border-radius:10px;padding:8px 10px}.compose-output textarea{min-height:360px}.compose-side h2{margin-top:0}.compose-actions-note{color:var(--muted);font-size:13px;line-height:1.7;margin:10px 0 16px}.suggest-grid,.preview-img{display:none!important}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.settings-grid .panel{padding:22px}.log{height:170px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:rgba(10,1,4,.5);padding:12px;color:#ffd7c8;font-family:Consolas,monospace;font-size:13px}.status-box{height:80px;border-radius:18px;border:1px solid var(--line);background:rgba(50,10,14,.72);display:flex;align-items:center;gap:14px;padding:0 18px;margin-top:12px}.dot{width:13px;height:13px;border-radius:50%;background:#7a2731}.dot.ok{background:var(--green);box-shadow:0 0 14px var(--green)}.dot.err{background:#ff365e;box-shadow:0 0 14px #ff365e}.history-item{display:flex;gap:12px;padding:12px;border-bottom:1px solid rgba(255,100,130,.12)}.history-item img{width:54px;height:54px;border-radius:12px;object-fit:cover}
+@media(max-width:1200px){.app{grid-template-columns:210px 1fr}.home-grid,.upload-grid,.compose-layout,.settings-grid{grid-template-columns:1fr}.asset-grid{grid-template-columns:repeat(3,1fr)}.card-row{grid-template-columns:repeat(3,1fr)}body{overflow:auto}.app,.main{height:auto}.view{height:auto}}
+
+/* v22 phrase compose preview */
+.compose-layout{grid-template-columns:minmax(680px,1fr) 360px;}
+.compose-tabs{position:sticky;top:0;z-index:4;background:linear-gradient(180deg,rgba(36,4,9,.96),rgba(36,4,9,.72));backdrop-filter:blur(16px);padding:10px 0 14px;margin:16px 0 12px;border-bottom:1px solid rgba(255,91,123,.13)}
+.compose-tabs .cat-filter{height:36px;padding:0 14px;border-radius:12px;background:rgba(58,8,14,.72);border:1px solid var(--line);font-weight:800;color:#ffe6dd}
+.compose-tabs .cat-filter.active{background:linear-gradient(135deg,#ed2d58,#830b19);box-shadow:var(--glow);color:#fff}
+.compose-tabs .compose-toggle-all{height:34px;padding:0 12px;border-radius:999px;background:rgba(255,209,138,.10);border:1px solid rgba(255,209,138,.22);color:#ffe4bd;font-size:13px;font-weight:800}
+.compose-section{border:1px solid rgba(255,91,123,.22);background:linear-gradient(180deg,rgba(65,7,14,.42),rgba(35,3,8,.48));border-radius:22px;margin:14px 0;padding:14px;box-shadow:0 18px 46px rgba(0,0,0,.18)}
+.compose-section-head{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 12px;border-bottom:1px dashed rgba(255,91,123,.18);margin-bottom:12px}.compose-section-head h3{margin:0;font-size:22px}.compose-section-head .count{color:#d7a199;font-size:13px}.subgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.subbox{border:1px solid rgba(255,115,140,.20);background:rgba(24,3,7,.30);border-radius:17px;overflow:hidden}.subbox-head{min-height:46px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;color:#ffe8df;font-weight:900;cursor:pointer}.subbox-head small{color:#c9968e;font-weight:600}.subbox-body{padding:0 12px 12px}.mini-label{font-size:12px;color:#ffd7a6;font-weight:900;margin:2px 0 8px;opacity:.9}.phrase-list,.term-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.tag-btn.phrase-chip{height:auto;min-height:36px;max-width:100%;white-space:normal;overflow:visible;text-overflow:clip;text-align:left;line-height:1.55;border-radius:14px;padding:8px 12px;background:rgba(255,210,150,.10);border:1px solid rgba(255,210,150,.25);color:#ffe4d2;flex:1 1 260px}.tag-btn.term-chip{height:28px;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:999px;background:rgba(120,22,34,.52);border:1px solid rgba(255,116,141,.25);padding:0 11px;color:#ffd8cf;font-size:12px}.tag-btn.phrase-chip:hover,.tag-btn.phrase-chip.active,.tag-btn.term-chip:hover,.tag-btn.term-chip.active{background:linear-gradient(135deg,#ed2d58,#a20d22);color:white;box-shadow:0 0 20px rgba(230,45,88,.28)}.tag-more,.tag-collapse{height:28px;border-radius:999px;background:rgba(255,209,138,.13);border:1px solid rgba(255,209,138,.25);color:#ffdba7;padding:0 10px;font-size:12px;font-weight:800}.tag-collapse{background:rgba(100,16,25,.66);color:#ffe1d7;border-color:rgba(255,120,145,.25)}.tag-more-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}.empty-tag{color:#986b66;font-size:13px}.selected{border:1px solid rgba(255,209,138,.18);background:rgba(255,209,138,.06);border-radius:18px;padding:12px;min-height:50px}.selected:before{content:'已选元素';font-weight:900;color:#ffe4bd;margin-right:8px}.selected span{cursor:pointer;display:inline-flex;gap:6px;align-items:center;background:rgba(255,200,150,.12);border:1px solid var(--line);border-radius:999px;padding:7px 10px;font-size:12px}.selected span:after{content:'×';opacity:.78}.compose-note{font-size:13px;color:#ffd0be;margin:8px 0 4px;line-height:1.7}.compose-side{position:sticky;top:0;max-height:calc(100vh - 44px)}
+@media(max-width:1200px){.subgrid{grid-template-columns:1fr}.compose-layout{grid-template-columns:1fr}.compose-side{position:relative;max-height:none}}
+
+
+/* v24c：合成台右侧最终提示词区域改为暖黄色底框 */
+.compose-side .panel{
+  background:linear-gradient(180deg,rgba(255,218,150,.22),rgba(255,196,112,.13)) !important;
+  border:1px solid rgba(255,211,138,.52) !important;
+  box-shadow:0 24px 70px rgba(255,170,80,.14), var(--shadow) !important;
+}
+.compose-side textarea,
+.compose-side #composeOutput,
+.compose-side #finalPrompt,
+.compose-side .final-prompt{
+  background:rgba(255,226,173,.86) !important;
+  border:1px solid rgba(255,214,145,.78) !important;
+  color:#650711 !important;
+  box-shadow:inset 0 0 0 1px rgba(120,35,10,.08) !important;
+}
+.compose-side textarea::placeholder,
+.compose-side #composeOutput::placeholder,
+.compose-side #finalPrompt::placeholder{
+  color:rgba(101,7,17,.58) !important;
+}
+.compose-side .panel h2,
+.compose-side .panel h3,
+.compose-side .panel label{
+  color:#fff1d0 !important;
+}
+.compose-side .panel p,
+.compose-side .panel small{
+  color:#ffd9bc !important;
+}
+
+
+/* v24d：去掉重复标题后，最终提示词框更像独立黄色编辑区 */
+.compose-output{margin-top:12px}
+.compose-output textarea{font-weight:700;line-height:1.75}
+
+
+/* v24e：上传整理详情面板改为纯暖黄色，不再使用渐变黄 */
+.editor{
+  background:rgba(255,226,173,.86)!important;
+  border-color:rgba(255,214,145,.78)!important;
+  color:#650711!important;
+  box-shadow:0 24px 70px rgba(255,170,80,.14), var(--shadow)!important;
+}
+.editor #editorStatus,.editor p,.editor small{color:rgba(101,7,17,.72)!important}
+.editor h2,.editor h3,.editor label{color:#650711!important}
+.editor .field input,.editor .field textarea,.editor .field select{
+  background:rgba(255,245,218,.62)!important;
+  border-color:rgba(120,24,22,.24)!important;
+  color:#5a0710!important;
+}
+.editor .field input::placeholder,.editor .field textarea::placeholder{color:rgba(101,7,17,.50)!important}
+.editor-foot{
+  background:rgba(255,226,173,.22)!important;
+  border-top:1px solid rgba(120,24,22,.18)!important;
+}
+.prompt-upload-box{
+  border:1px dashed rgba(120,24,22,.28);
+  background:rgba(255,245,218,.40);
+  border-radius:20px;
+  padding:18px;
+  margin:0 0 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.prompt-upload-box h3{margin:0 0 6px!important}
+.prompt-upload-box p{margin:0;line-height:1.6}
+.no-img-thumb{
+  width:100%;
+  aspect-ratio:1/1;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  background:linear-gradient(145deg,rgba(255,226,173,.74),rgba(255,207,137,.58));
+  color:#650711;
+  border-bottom:1px solid rgba(255,130,150,.2);
+}
+.no-img-thumb span{font-weight:900;font-size:16px}
+.no-img-thumb small{display:block;color:rgba(101,7,17,.62);font-size:12px;margin-top:6px}
+.queue-item .no-img-thumb{
+  width:46px;height:46px;aspect-ratio:auto;border-radius:12px;border:1px solid rgba(255,214,145,.45);font-size:11px;flex:0 0 46px;
+}
+.queue-item .no-img-thumb span{font-size:11px}
+.queue-item .no-img-thumb small{display:none}
+.detail-card>.no-img-thumb{
+  width:280px;max-width:30vw;border-radius:24px;border:1px solid rgba(255,214,145,.55);overflow:hidden;
+}
+
+
+/* v24f：设置/API页隐藏顶部搜索栏；上传整理页去掉右侧详情面板内部滚动条 */
+.main.settings-mode .topbar .search{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+.main.upload-mode .editor-body{
+  overflow:visible!important;
+  padding-right:0!important;
+}
+.main.upload-mode .editor{
+  overflow:visible!important;
+}
+.main.upload-mode .content{
+  overflow:auto!important;
+}
+.main.upload-mode .editor-body::-webkit-scrollbar{
+  display:none!important;
+}
+.main.upload-mode .editor-body{
+  scrollbar-width:none!important;
+}
+
+
+/* v24g：修复上传整理右侧详情面板错位，所有整理字段重新收回黄色框内 */
+.main.upload-mode .upload-grid{
+  height:100%;
+  align-items:stretch!important;
+}
+.main.upload-mode .editor{
+  overflow:hidden!important;
+  min-height:0!important;
+  max-height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.main.upload-mode .editor-body{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:auto!important;
+  padding-right:8px!important;
+}
+.main.upload-mode .editor-foot{
+  flex:0 0 auto!important;
+  position:sticky!important;
+  bottom:0!important;
+  z-index:5!important;
+  margin-top:10px!important;
+  border-radius:18px!important;
+  background:rgba(255,226,173,.92)!important;
+  backdrop-filter:blur(10px)!important;
+}
+.main.upload-mode .editor-body::-webkit-scrollbar{
+  width:0!important;
+  height:0!important;
+}
+.main.upload-mode .editor-body{
+  scrollbar-width:none!important;
+}
+
+
+/* v24h：上传整理页左侧上传队列收进独立框内滑动浏览 */
+.main.upload-mode .upload-left{
+  overflow:hidden!important;
+  min-height:0!important;
+}
+.main.upload-mode #queueList.queue{
+  max-height:210px!important;
+  overflow-y:auto!important;
+  padding:12px!important;
+  border:1px solid rgba(255,92,126,.25)!important;
+  border-radius:20px!important;
+  background:rgba(35,3,8,.34)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+.main.upload-mode #queueList.queue::-webkit-scrollbar{
+  width:6px!important;
+}
+.main.upload-mode #queueList.queue::-webkit-scrollbar-thumb{
+  background:rgba(255,190,140,.35)!important;
+  border-radius:999px!important;
+}
+.main.upload-mode #queueList.queue::-webkit-scrollbar-track{
+  background:transparent!important;
+}
+.main.upload-mode #queueList .queue-item{
+  flex:0 0 auto!important;
+}
+
+
+/* v24i：最终细节修正 */
+/* 上传整理页、设置/API页不再显示顶部搜索栏、上传图片、新建提示词按钮 */
+.main.upload-mode .topbar,
+.main.settings-mode .topbar{
+  display:none!important;
+}
+
+/* 隐藏顶部栏后，内容区域直接顶上来 */
+.main.upload-mode .content,
+.main.settings-mode .content{
+  height:100vh!important;
+  padding-top:32px!important;
+}
+
+/* 上传整理右侧底部按钮栏：收在黄色框内部，居中排列 */
+.main.upload-mode .editor-foot{
+  justify-content:center!important;
+  align-items:center!important;
+  gap:16px!important;
+  padding:18px 22px!important;
+  margin-top:14px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+.main.upload-mode .editor-foot .btn{
+  min-width:130px!important;
+  text-align:center!important;
+  justify-content:center!important;
+}
+
+/* 右侧黄色框内按钮栏不要再出现偏移或外溢 */
+.main.upload-mode .editor{
+  position:relative!important;
+}
+.main.upload-mode .editor-body{
+  padding-bottom:8px!important;
+}
+
+
+/* v24j：上传整理与资产库细节 */
+.upload-head-actions{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.upload-head-actions .btn{
+  white-space:nowrap;
+}
+.main.upload-mode .drop{
+  height:330px!important;
+  min-height:330px!important;
+}
+.main.upload-mode .drop h3{
+  font-size:26px!important;
+  line-height:1.25!important;
+  margin:0 0 12px!important;
+}
+.main.upload-mode .drop p{
+  font-size:14px!important;
+  line-height:1.55!important;
+  margin:0 0 12px!important;
+  max-width:520px;
+}
+.main.upload-mode .recent-list{
+  grid-template-columns:repeat(5,minmax(76px,1fr))!important;
+  gap:10px!important;
+}
+.main.upload-mode .recent-list .img-card{
+  border-radius:14px!important;
+}
+.main.upload-mode .recent-list .img-card img,
+.main.upload-mode .recent-list .img-card .no-img-thumb{
+  aspect-ratio:1/0.86!important;
+}
+.main.upload-mode .recent-list .img-card .cap{
+  padding:8px!important;
+}
+.main.upload-mode .recent-list .img-card b{
+  font-size:13px!important;
+}
+.asset-grid .img-card b,
+.recent-list .img-card b,
+.card-row .img-card b{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.detail-card #detailName{
+  font-weight:800;
+}
+
+
+/* v24m：上传整理页严谨重做——左侧大框内滚动 + 上传队列瀑布流 */
+.main.upload-mode{
+  height:100vh!important;
+  overflow:hidden!important;
+}
+.main.upload-mode .topbar{
+  display:none!important;
+}
+.main.upload-mode .content{
+  height:100vh!important;
+  padding:34px!important;
+  overflow:hidden!important;
+}
+.main.upload-mode #view-upload{
+  height:calc(100vh - 68px)!important;
+  overflow:hidden!important;
+}
+
+/* 固定左右两栏，不再互相挤压 */
+.main.upload-mode .upload-grid{
+  height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-columns:minmax(620px,0.95fr) minmax(560px,1.05fr)!important;
+  gap:24px!important;
+  align-items:stretch!important;
+}
+
+/* 左侧红色面板：只有它自己内部滚动，滚动条贴在面板右侧 */
+.main.upload-mode .upload-left{
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:28px!important;
+  box-sizing:border-box!important;
+  border-radius:28px!important;
+  scrollbar-color:rgba(255,210,150,.55) rgba(255,210,150,.12)!important;
+  scrollbar-width:thin!important;
+}
+.main.upload-mode .upload-left::-webkit-scrollbar{
+  width:10px!important;
+}
+.main.upload-mode .upload-left::-webkit-scrollbar-track{
+  background:rgba(255,210,150,.12)!important;
+  border-radius:999px!important;
+  margin:18px 0!important;
+}
+.main.upload-mode .upload-left::-webkit-scrollbar-thumb{
+  background:rgba(255,210,150,.60)!important;
+  border-radius:999px!important;
+  border:2px solid rgba(58,5,12,.8)!important;
+}
+
+/* 上传区域 */
+.main.upload-mode .drop{
+  height:300px!important;
+  min-height:300px!important;
+}
+.main.upload-mode .drop h3{
+  font-size:28px!important;
+  line-height:1.25!important;
+  margin:0 0 12px!important;
+}
+.main.upload-mode .drop p{
+  font-size:14px!important;
+  line-height:1.55!important;
+  margin:0 0 14px!important;
+}
+
+/* 最近上传：正常卡片大小 */
+.main.upload-mode .recent-list{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(118px,1fr))!important;
+  gap:14px!important;
+  margin-top:16px!important;
+}
+.main.upload-mode .recent-list .img-card{
+  min-width:0!important;
+  border-radius:16px!important;
+}
+.main.upload-mode .recent-list .img-card img,
+.main.upload-mode .recent-list .img-card .no-img-thumb{
+  aspect-ratio:1/1!important;
+}
+.main.upload-mode .recent-list .img-card .cap{
+  padding:9px 10px!important;
+}
+.main.upload-mode .recent-list .img-card b{
+  font-size:14px!important;
+}
+
+/* 上传队列：改为瀑布流卡片，不再是很窄的列表 */
+.main.upload-mode #queueList.queue{
+  width:100%!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(220px,1fr))!important;
+  gap:14px!important;
+  margin-top:16px!important;
+}
+.main.upload-mode .queue-card{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:92px 1fr!important;
+  gap:14px!important;
+  align-items:center!important;
+  min-height:108px!important;
+  padding:12px 14px!important;
+  border:1px solid rgba(255,92,126,.28)!important;
+  border-radius:20px!important;
+  background:rgba(72,9,15,.62)!important;
+  box-sizing:border-box!important;
+  cursor:pointer!important;
+  transition:.2s!important;
+}
+.main.upload-mode .queue-card:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 0 28px rgba(231,45,88,.22)!important;
+}
+.main.upload-mode .queue-thumb{
+  width:92px!important;
+  height:82px!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  flex:0 0 auto!important;
+}
+.main.upload-mode .queue-thumb img,
+.main.upload-mode .queue-thumb .no-img-thumb{
+  width:92px!important;
+  height:82px!important;
+  aspect-ratio:auto!important;
+  object-fit:cover!important;
+  border-radius:16px!important;
+}
+.main.upload-mode .queue-info{
+  min-width:0!important;
+}
+.main.upload-mode .queue-info b{
+  display:block!important;
+  font-size:17px!important;
+  line-height:1.25!important;
+  color:#fff3ea!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.main.upload-mode .queue-info small{
+  display:block!important;
+  margin-top:8px!important;
+  font-size:13px!important;
+  color:#ddb3aa!important;
+}
+.main.upload-mode .queue-state{
+  position:absolute!important;
+  right:14px!important;
+  bottom:10px!important;
+  color:#ffe8d0!important;
+  font-weight:900!important;
+}
+
+/* 右侧黄色编辑框保持框内滚动 */
+.main.upload-mode .editor{
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+.main.upload-mode .editor-body{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:8px!important;
+}
+.main.upload-mode .editor-foot{
+  flex:0 0 auto!important;
+  position:sticky!important;
+  bottom:0!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:16px!important;
+  padding:18px 22px!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+.main.upload-mode .editor-foot .btn{
+  min-width:130px!important;
+  justify-content:center!important;
+}
+
+/* 屏幕较窄时仍保持可用，不把队列挤成细条 */
+@media(max-width:1400px){
+  .main.upload-mode .upload-grid{
+    grid-template-columns:minmax(560px,1fr) minmax(520px,1fr)!important;
+  }
+  .main.upload-mode #queueList.queue{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* v24n：上传队列只展示最新 6 个，保持瀑布流卡片大小 */
+.main.upload-mode #queueList.queue::after{
+  content:'仅展示最近 6 条上传记录，更多内容已自动收纳到资产库';
+  grid-column:1 / -1;
+  display:block;
+  color:#cfa59c;
+  font-size:13px;
+  padding:4px 2px 0;
+}
+
+
+/* v24o：品牌名与顶部栏清理 */
+/* 左侧品牌改为 Prompt Blossoms，缩小并留出右侧边距，避免碰到分割线 */
+.side{
+  width:300px!important;
+}
+.main{
+  margin-left:300px!important;
+}
+.brand{
+  gap:12px!important;
+  padding-right:18px!important;
+  box-sizing:border-box!important;
+}
+.brand img{
+  width:66px!important;
+  height:66px!important;
+  flex:0 0 66px!important;
+}
+.brand h1{
+  font-size:24px!important;
+  line-height:1.05!important;
+  letter-spacing:-.04em!important;
+  white-space:nowrap!important;
+  max-width:190px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.brand p{
+  font-size:13px!important;
+  white-space:nowrap!important;
+}
+
+/* 首页：删除顶部搜索栏、上传图片、新建提示词 */
+.main.home-mode .topbar{
+  display:none!important;
+}
+.main.home-mode .content{
+  height:100vh!important;
+  padding-top:32px!important;
+}
+
+/* 合成台：删除顶部上传图片、新建提示词按钮，并隐藏顶部栏 */
+.main.compose-mode .topbar{
+  display:none!important;
+}
+.main.compose-mode .content{
+  height:100vh!important;
+  padding-top:32px!important;
+}
+
+/* 设置页、上传页继续保持没有顶部栏 */
+.main.settings-mode .topbar,
+.main.upload-mode .topbar{
+  display:none!important;
+}
+
+
+/* v24p：修复左侧导航与主内容之间的异常大空白 */
+/* 之前同时用了 grid 列宽 + main margin-left，导致中间空出一大片；这里恢复正常网格布局 */
+.app{
+  grid-template-columns:260px 1fr!important;
+}
+.side{
+  width:auto!important;
+  padding:24px 18px!important;
+}
+.main{
+  margin-left:0!important;
+  padding-left:22px!important;
+  padding-right:24px!important;
+}
+
+/* 保留 Prompt Blossoms，但缩小字号和 logo，避免碰到边框 */
+.brand{
+  gap:10px!important;
+  padding-right:8px!important;
+}
+.brand img{
+  width:54px!important;
+  height:54px!important;
+  flex:0 0 54px!important;
+}
+.brand h1{
+  font-size:20px!important;
+  line-height:1.05!important;
+  letter-spacing:-.035em!important;
+  max-width:164px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.brand p{
+  font-size:12px!important;
+  white-space:nowrap!important;
+}
+
+</style>
+</head>
+<body><div class="noise"></div>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><img src="assets/logo_lotus.png"><div><h1>Prompt Blossoms</h1><p>让灵感开花 · v24p</p></div></div>
+    <nav class="nav">
+      <button class="active" data-view="home">⌂ 首页</button>
+      <button data-view="upload">⇩ 上传整理</button>
+      <button data-view="assets">▧ 资产库</button>
+      <button data-view="compose">✣ 合成台</button>
+      <button data-view="settings">⚙ 设置 / API</button>
+    </nav>
+  </aside>
+  <main class="main home-mode">
+    <div class="topbar">
+      <div class="search">⌕ <input id="globalSearch" placeholder="搜索图片名、分类、标签、提示词..."></div>
+      <div class="top-actions"><button class="btn" id="uploadTop">⇧ 上传图片</button><button class="btn" id="newPromptTop">✦ 新建提示词</button></div>
+    </div>
+    <div class="content">
+      <section class="view active" id="view-home">
+        <div class="home-grid">
+          <div>
+            <div class="hero panel"><div class="hero-content"><h1>让灵感开花</h1><p>AI 图片提示词整理与创作管理平台<br>高效整理 · 轻松创作 · 无限复用</p><button class="btn" onclick="showView('upload')">开始创作 →</button> <button class="btn ghost" onclick="showView('assets')">查看资产库</button></div></div>
+            <div class="stats"><div class="stat"><span>提示词总数</span><b id="statPrompt">0</b></div><div class="stat"><span>图片资源</span><b id="statAsset">0</b></div><div class="stat"><span>合成项目</span><b id="statCompose">0</b></div><div class="stat"><span>今日使用</span><b>2.1h</b></div></div>
+            <div class="panel recent-home"><h3>最近上传 <button class="btn ghost small" style="float:right" onclick="showView('assets')">查看全部 →</button></h3><div class="card-row" id="homeRecent"></div></div>
+          </div>
+        </div><div class="panel tags-home"><h3>热门标签</h3><div class="pill-row" id="hotTags"></div></div>
+      </section>
+      <section class="view" id="view-upload"><div class="upload-grid"><div class="panel upload-left"><div class="upload-head-row"><div class="section-title"><h2>上传整理</h2><p>上传图片并整理提示词，智能提取结构化信息</p></div><div class="upload-head-actions"><button class="btn" id="uploadLeftBtn">⇧ 上传图片</button><button class="btn ghost" id="uploadNewPromptBtn">✦ 新建提示词</button></div></div><div class="drop" id="dropZone"><input id="fileInput" type="file" accept="image/*" multiple><div><h3>拖拽图片到此处，或点击上传</h3><p style="color:var(--soft)">支持 JPG / PNG / WEBP，单张建议不超过 20MB</p><button class="btn">选择图片</button></div></div><h3>最近上传</h3><div class="recent-list" id="recentList"></div><h3>上传队列</h3><div class="queue" id="queueList"></div></div><div class="panel editor"><div class="editor-head"><img id="editorThumb" class="hidden"><div><h2 id="editorTitle">当前图片详情</h2><p id="editorStatus" style="color:var(--muted)">上传或选择图片后，提示词信息会显示在这里</p></div></div><div id="editorBody" class="editor-body"></div><div id="editorFoot" class="editor-foot"></div></div></div></section>
+      <section class="view" id="view-assets"><div class="assets-head"><div class="section-title"><h2>资产库</h2><p>管理你的图片与提示词资产，点击卡片查看详情</p></div></div><div class="filter-bar"><input id="assetSearch" placeholder="搜索资源..."><select id="sortAsset"><option value="new">最新上传</option><option value="name">名称</option><option value="category">分类</option></select></div><div class="cat-tabs" id="assetCats"></div><div class="asset-grid" id="assetGrid"></div></section>
+      <section class="view" id="view-compose"><div class="compose-layout"><div class="panel compose-main"><div class="section-title"><h2>合成台</h2><p>按分类挑选短句与名词，组合成更完整的图片 / 视频提示词</p></div><div class="compose-tabs" id="composeTabs"></div><div id="composeGroups"></div><div class="selected" id="selectedTags"></div></div><aside class="panel compose-side"><h2>最终提示词</h2><p class="compose-actions-note">左侧点选短句或关键词后会自动组合到这里，也可以直接编辑。</p><div class="field compose-output"><textarea id="composeText" placeholder="点击左侧标签后会自动组合到这里，也可以直接编辑"></textarea></div><div class="actions"><button class="btn ghost" id="copyCompose">复制</button><button class="btn" id="exportCompose">导出提示词</button></div></aside></div></section>
+      <section class="view" id="view-settings"><div class="settings-grid"><div class="panel"><h2>API 设置与检测</h2><div class="field"><label>图片分析 API 地址</label><input id="apiUrl" placeholder="https://YOUR_RENDER_BACKEND_URL.onrender.com/api/analyze-image"></div><div class="field"><label>模型偏好</label><select id="apiProvider"><option value="qwen">千问视觉模型</option><option value="local">本地模式</option></select></div><div class="actions"><button class="btn" id="saveSettings">保存设置</button><button class="btn ghost" id="testApi">测试连接</button></div><div class="status-box"><span id="apiDot" class="dot"></span><div><b id="apiText">API 未测试</b><br><small style="color:var(--muted)">后端 Key 放在环境变量里，网页只保存接口地址</small></div></div></div><div class="panel"><h2>数据管理</h2><div class="actions"><button class="btn ghost" id="importData">导入 JSON</button><button class="btn yellow" id="exportData">导出 JSON</button><button class="btn danger" id="wipeData">清空全部</button><input type="file" id="importFile" accept="application/json" class="hidden"></div><h3>系统日志 & 调试</h3><div class="log" id="debugLog">等待操作...</div></div></div><div class="panel" style="padding:20px;margin-top:18px"><h2>历史记录</h2><div id="historyList"></div></div></section>
+    </div>
+  </main>
+</div>
+<div id="assetDetail" class="detail-overlay"></div>
+<script src="config.js"></script>
+<script>
+const SKEY='pb_v24_assets',HKEY='pb_v24_history',CFG='pb_v24_cfg';
+const KEYS=['主体','场景','风格','构图','镜头','色彩','材质','光影','用途','负面提示词'];
+const CATS=['全部','角色参考','场景参考','风格参考','分镜关键帧','UI/图标素材','视频首帧','视频尾帧','训练素材','未分类'];
+const DEMOS=['red_fan_girl','crimson_castle','cyber_city','sakura_tree','red_portal','waterfall','lantern','ink_mountain'];
+const TITLES=['古风少女','赤焰古塔','赛博夜景','山麓绯树','星云漩涡','赤枫瀑布','红灯笼','水墨山水'];
+const COMPOSE={
+ '主体':{'人物':['少女','女性','青年','男子','儿童','老人','战士','魔法师','机器人'], '生物':['猫','狗','龙','独角兽','鸟','鹿','狐狸','蝴蝶'], '物体':['剑','魔法书','灯笼','机甲','跑车','古董钟','相机','花朵'], '服饰':['汉服','斗篷','盔甲','连衣裙','西装','帽子','耳环']},
+ '场景':{'自然':['森林','雪山','海边','樱花林','红枫谷','瀑布','月夜'], '建筑':['古风宫殿','赛博城市','日式庭院','教堂','城堡','室内工作室'], '幻想':['星空梦境','魔法空间','异世界入口','浮空岛','水晶洞穴']},
+ '风格':{'写实摄影':['真实摄影','浅景深','商业摄影','胶片质感'], '插画绘本':['手绘插画','水彩画','油画','厚涂','绘本风'], '3D/CG':['3D渲染','C4D','Octane渲染','虚幻引擎','二次元3D'], '动漫二次元':['日系动漫','国漫','Q版','赛璐璐','轻小说插画'], '国风水墨':['水墨','工笔画','国风插画','敦煌风','古风','汉服风']},
+ '构图':{'取景':['特写','半身','全身','远景','俯视','低角度'], '方式':['中心构图','对称构图','三分构图','留白','动态构图']},
+ '镜头':{'运动':['推进镜头','拉远','环绕','横移','跟随'], '焦段':['广角镜头','长焦镜头','微距','鱼眼','电影镜头']},
+ '色彩':{'色系':['红色系','暗红色','粉色','金色','蓝紫色','黑白灰'], '氛围':['高饱和','低饱和','柔和渐变','霓虹光','复古色调']},
+ '材质':{'材料':['金属','丝绸','玻璃','木材','陶瓷','纸张','宝石','水晶'], '质感':['磨砂','反光','透明','纹理细腻','颗粒感']},
+ '光影':{'方向':['正面光','侧光','逆光','顶光','轮廓光'], '氛围':['柔光','硬光','黄昏光','月光','霓虹光','体积光']},
+ '用途':{'创作':['角色参考','场景参考','视频首帧','视频尾帧','分镜','转场','UI图标','训练素材']},
+ '负面提示词':{'质量':['模糊','低清晰度','低质量','噪点','过曝'], '结构':['畸形','手部错误','脸部崩坏','裁切','水印','文字错误']}
+};
+let assets=[],history=[],currentId=null,composeMain='全部',selected=[]; let composeExpanded={},composeCollapsed={};
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const uid=()=>Math.random().toString(36).slice(2,10); const esc=s=>(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const DEFAULT_API_URL = (window.PROMPTBLOOM_API_URL || 'https://YOUR_RENDER_BACKEND_URL.onrender.com/api/analyze-image');
+const cfg=()=>{
+  const saved=JSON.parse(localStorage.getItem(CFG)||'{}');
+  return { apiUrl: saved.apiUrl || DEFAULT_API_URL, apiProvider: saved.apiProvider || 'qwen' };
+};
+function log(t){const time=new Date().toLocaleTimeString();$('#debugLog').textContent=`${time}  ${t}\n`+$('#debugLog').textContent}
+function lightweightAsset(a){
+  // localStorage 容量很小：只在必要时把超大 dataURL 替换成占位图，避免保存失败中断 AI 请求
+  const dataUrl = (a.dataUrl && a.dataUrl.startsWith('data:') && a.dataUrl.length>420000) ? 'assets/logo_lotus.png' : a.dataUrl;
+  return {...a, dataUrl};
+}
+function save(){
+  try{
+    localStorage.setItem(SKEY,JSON.stringify(assets));
+    localStorage.setItem(HKEY,JSON.stringify(history));
+    return true;
+  }catch(e){
+    console.warn('[PromptBloom] localStorage 满了，改用轻量保存，不中断 AI 分析', e);
+    try{ if($('#debugLog')) log('本地存储空间不足，已自动切换轻量保存，不影响本次 AI 分析'); }catch(_){}
+    try{
+      const lightAssets=assets.map(lightweightAsset);
+      const lightHistory=history.map(h=>({...h,img:'assets/logo_lotus.png'})).slice(0,20);
+      localStorage.setItem(SKEY,JSON.stringify(lightAssets));
+      localStorage.setItem(HKEY,JSON.stringify(lightHistory));
+      return false;
+    }catch(e2){
+      console.warn('[PromptBloom] 轻量保存仍失败，清空历史后继续', e2);
+      try{localStorage.setItem(HKEY,'[]')}catch(_){}
+      return false;
+    }
+  }
+}
+function addHistory(type,name,img){
+  history.unshift({type,name,img:'assets/logo_lotus.png',time:new Date().toLocaleTimeString()});
+  history=history.slice(0,30);
+  save();
+}
+function promptFromModules(m={}){return KEYS.filter(k=>k!=='负面提示词').map(k=>m[k]).filter(Boolean).join('，')+(m['负面提示词']?'。负面提示词：'+m['负面提示词']:'')}
+function fallbackModules(name='图片'){return {'主体':name.replace(/\.[^.]+$/,''),'场景':'暗红色幻想背景，主体突出','风格':'精致国风插画，暗红玻璃质感','构图':'主体居中，画面留白舒适','镜头':'中景镜头，稳定画面','色彩':'暗红、玫红、金色点缀','材质':'细腻纹理，边缘清晰','光影':'柔和侧光，氛围光丰富','用途':'图片提示词参考','负面提示词':'模糊，低清晰度，畸形，水印，文字错误'} }
+function splitPrompt(text){let m=fallbackModules('提示词'); if(!text.trim())return m; const parts=text.split(/[，,。]/).map(x=>x.trim()).filter(Boolean); m['主体']=parts[0]||m['主体']; ['场景','风格','构图','镜头','色彩','材质','光影','用途','负面提示词'].forEach(k=>{const hit=parts.find(p=>p.includes(k)||Object.values(COMPOSE[k]||{}).flat().some(v=>p.includes(v))); if(hit)m[k]=hit}); return m}
+function initDemos(){if(localStorage.getItem(SKEY))return;assets=DEMOS.map((n,i)=>{let m=fallbackModules(TITLES[i]);m['主体']=TITLES[i];m['场景']=i%2?'幻想建筑场景':'国风自然场景';m['风格']=i%3?'精致暗红插画':'国风水墨与赛博融合';let cat=i==0?'角色参考':i<4?'场景参考':i<6?'风格参考':'训练素材';return {id:uid(),name:TITLES[i]+'.png',dataUrl:`assets/${n}.png`,category:cat,tags:['示例','暗红','灵感'],modules:m,prompt:promptFromModules(m),status:'done',createdAt:Date.now()-i*999999,updatedAt:Date.now()}});save();}
+function load(){initDemos();assets=JSON.parse(localStorage.getItem(SKEY)||'[]');history=JSON.parse(localStorage.getItem(HKEY)||'[]');currentId=currentId||assets[0]?.id||null;let c=cfg();$('#apiUrl').value=c.apiUrl;$('#apiProvider').value=c.apiProvider;}
+function showView(v){$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$('.main')?.classList.toggle('home-mode',v==='home');$('.main')?.classList.toggle('compose-mode',v==='compose');$('.main')?.classList.toggle('settings-mode',v==='settings');$('.main')?.classList.toggle('upload-mode',v==='upload'); if(v==='compose')renderCompose(); if(v==='assets')renderAssets();}
+function render(){renderHome();renderRecent();renderQueue();renderEditor();renderAssets();renderCompose();renderHistory();$('#statAsset').textContent=assets.length;$('#statPrompt').textContent=assets.filter(a=>a.prompt).length;$('#statCompose').textContent=selected.length;}
+
+function hasRealImage(a){return !!(a&&a.dataUrl&&String(a.dataUrl).startsWith('data:'))}
+function thumbHtml(a){
+  if(hasRealImage(a)) return `<img src="${a.dataUrl}" alt="${esc(a.name||'图片')}">`;
+  return `<div class="no-img-thumb"><div><span>提示词资产</span><small>可上传图片</small></div></div>`;
+}
+
+function makeCard(a){
+  return `<div class="img-card asset-card" data-id="${a.id}">${thumbHtml(a)}<span class="tag">${esc(a.category||'未分类')}</span><div class="cap"><b>${esc(a.name)}</b><div class="meta"><span>${esc((a.tags||[])[0]||'标签')}</span><span>${a.status==='analyzing'?'分析中':hasRealImage(a)?'图片':'提示词'}</span></div></div></div>`
+}
+function renderHome(){let list=assets.slice(0,6);$('#homeRecent').innerHTML=list.map(makeCard).join('')||'<p>暂无图片</p>';$('#hotTags').innerHTML=['赛博朋克','国风古韵','奇幻风景','未来科幻','唯美少女','室内设计','动漫插画','自然风光','静物摄影'].map(x=>`<span class="pill">${x}</span>`).join('');$('#homeRecent').querySelectorAll('.img-card').forEach(c=>c.onclick=()=>openDetail(c.dataset.id));}
+function renderRecent(){
+  let list=assets.slice(0,8);
+  $('#recentList').innerHTML=list.map(a=>`<div class="img-card" data-id="${a.id}">${thumbHtml(a)}<div class="cap"><b>${esc(a.name)}</b></div></div>`).join('');
+  $('#recentList').querySelectorAll('.img-card').forEach(c=>c.onclick=()=>{currentId=c.dataset.id;renderEditor()});
+}
+function renderQueue(){
+  let list=assets.slice(0,6);
+  $('#queueList').innerHTML=list.map(a=>`
+    <div class="queue-card" data-id="${a.id}">
+      <div class="queue-thumb">${thumbHtml(a)}</div>
+      <div class="queue-info">
+        <b>${esc(a.name)}</b>
+        <small>${a.status==='analyzing'?'正在提取提示词':a.status==='failed'?'API失败，可重新分析':hasRealImage(a)?'分析完成':'纯提示词资产'}</small>
+      </div>
+      <span class="queue-state">${a.status==='analyzing'?'分析中':'✓'}</span>
+    </div>
+  `).join('')||'<p style="color:var(--muted)">暂无上传记录</p>';
+  $('#queueList').querySelectorAll('.queue-card').forEach(c=>c.onclick=()=>{currentId=c.dataset.id;renderEditor()});
+}
+function editorForm(a){return `<div class="module-grid"><div class="field"><label>自定义名称</label><input id="editName" value="${esc(a.name)}"></div><div class="field"><label>类型</label><select id="editCategory">${CATS.filter(x=>x!='全部').map(c=>`<option ${a.category===c?'selected':''}>${c}</option>`).join('')}</select></div></div><div class="field"><label>标签</label><input id="editTags" value="${esc((a.tags||[]).join('，'))}" placeholder="用逗号分隔"></div><div class="field"><label>完整提示词（AI生成后可直接修改）</label><textarea id="editPrompt">${esc(a.prompt||promptFromModules(a.modules||{}))}</textarea></div><div class="field"><label>粘贴一段提示词并拆分</label><textarea id="pastePrompt" placeholder="把任意完整提示词粘贴到这里，点击下方按钮拆分到结构化字段"></textarea></div><button class="btn ghost small" id="splitPaste">拆分到下方分类</button><div class="module-grid" style="margin-top:14px">${KEYS.map(k=>`<div class="field"><label>${k}</label><input class="modInput" data-k="${k}" value="${esc((a.modules||{})[k]||'')}"></div>`).join('')}</div>`}
+function renderEditor(){
+  let a=assets.find(x=>x.id===currentId); 
+  if(!a){
+    $('#editorThumb').classList.add('hidden');
+    $('#editorTitle').textContent='当前图片详情';
+    $('#editorStatus').textContent='上传或选择图片后，提示词信息会显示在这里';
+    $('#editorBody').innerHTML='<div class="empty-state"><div><h2>等待上传</h2><p>请选择或拖拽图片开始整理。</p></div></div>';
+    $('#editorFoot').innerHTML='';
+    return
+  }
+  if(hasRealImage(a)){
+    $('#editorThumb').src=a.dataUrl;
+    $('#editorThumb').classList.remove('hidden');
+  }else{
+    $('#editorThumb').classList.add('hidden');
+  }
+  $('#editorTitle').textContent=a.name;
+  $('#editorStatus').textContent=!hasRealImage(a)
+    ? '纯提示词资产：可直接编辑，也可以从本地上传一张参考图片'
+    : a.status==='analyzing'?'分析中：正在请求 AI 生成提示词':a.status==='failed'?'API失败：已使用本地兜底，可重新分析':'分析完成：可直接编辑完整提示词';
+  const imageBox = !hasRealImage(a)
+    ? `<div class="prompt-upload-box"><div><h3>此条为纯提示词资产</h3><p>新建提示词不强制显示图片；你也可以从本地上传一张图片作为参考图。</p></div><div><button class="btn" id="attachImageBtn">上传本地图片</button><input type="file" id="attachImageFile" accept="image/*" class="hidden"></div></div>`
+    : `<div class="prompt-upload-box"><div><h3>已绑定参考图片</h3><p>可以继续编辑提示词；如需替换图片，可重新上传本地图片。</p></div><div><button class="btn ghost" id="attachImageBtn">更换图片</button><input type="file" id="attachImageFile" accept="image/*" class="hidden"></div></div>`;
+  $('#editorBody').innerHTML=imageBox+editorForm(a);
+  $('#editorFoot').innerHTML='<button class="btn" id="saveAsset">保存修改</button><button class="btn yellow" id="sendCompose">发送到合成台</button><button class="btn ghost" id="reanalyze">重新分析</button><button class="btn danger" id="deleteAsset">删除图片</button>';
+  $('#attachImageBtn').onclick=()=>$('#attachImageFile').click();
+  $('#attachImageFile').onchange=e=>attachImageToCurrent(e.target.files&&e.target.files[0]);
+  $('#splitPaste').onclick=()=>{let m=splitPrompt($('#pastePrompt').value);$$('.modInput').forEach(i=>{if(m[i.dataset.k])i.value=m[i.dataset.k]});$('#editPrompt').value=promptFromModules(m)};
+  $('#saveAsset').onclick=saveCurrent;
+  $('#sendCompose').onclick=()=>{saveCurrent();addToCompose(collectCurrent().prompt);showView('compose')};
+  $('#reanalyze').onclick=()=>{saveCurrent();analyze(a.id)};
+  $('#deleteAsset').onclick=()=>{if(confirm('删除该图片/提示词？')){assets=assets.filter(x=>x.id!==a.id);currentId=assets[0]?.id||null;save();render();}}
+}
+function collectCurrent(){let a=assets.find(x=>x.id===currentId); if(!a)return null; a.name=$('#editName').value.trim()||a.name; a.category=$('#editCategory').value; a.tags=$('#editTags').value.split(/[，,]/).map(x=>x.trim()).filter(Boolean); a.prompt=$('#editPrompt').value.trim(); a.modules={};$$('.modInput').forEach(i=>a.modules[i.dataset.k]=i.value.trim()); if(!a.prompt)a.prompt=promptFromModules(a.modules); a.updatedAt=Date.now(); return a}
+function saveCurrent(){let a=collectCurrent(); if(!a)return;assets=assets.map(x=>x.id===a.id?a:x);addHistory('保存修改',a.name,a.dataUrl);save();render();}
+function readFile(f){return new Promise((res,rej)=>{let r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(f)})}
+function compressImageFile(file,maxSide=980,quality=.72){
+  return new Promise((resolve)=>{
+    if(!file.type.startsWith('image/')) return resolve(null);
+    const reader=new FileReader();
+    reader.onerror=()=>readFile(file).then(resolve);
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>resolve(reader.result);
+      img.onload=()=>{
+        try{
+          let w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
+          const scale=Math.min(1,maxSide/Math.max(w,h));
+          w=Math.max(1,Math.round(w*scale)); h=Math.max(1,Math.round(h*scale));
+          const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+          const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,w,h);
+          const out=canvas.toDataURL('image/jpeg',quality);
+          resolve(out || reader.result);
+        }catch(e){ resolve(reader.result); }
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function attachImageToCurrent(file){
+  if(!file || !file.type || !file.type.startsWith('image/')) return;
+  let a=assets.find(x=>x.id===currentId); 
+  if(!a) return;
+  const dataUrl=await compressImageFile(file,980,.72);
+  a.dataUrl=dataUrl;
+  a.hasImage=true;
+  if(!a.name || /^新建提示词(\.png)?$/.test(a.name)) a.name=file.name;
+  a.tags=uniq([...(a.tags||[]).filter(t=>t!=='手动'&&t!=='手动提示词'),'已绑定图片']);
+  a.updatedAt=Date.now();
+  addHistory('绑定图片',a.name,'assets/logo_lotus.png');
+  save();
+  render();
+  log('已为当前提示词绑定本地图片：'+file.name+'。如需 AI 重新分析，请点击“重新分析”。');
+}
+
+async function addFiles(files){
+  for(const f of files){
+    if(!f.type || !f.type.startsWith('image/')) continue;
+    console.log('[PromptBloom] 准备上传并分析', f.name);
+    let m=fallbackModules(f.name);
+    let dataUrl=await compressImageFile(f,980,.72);
+    let a={id:uid(),name:f.name,dataUrl,category:'未分类',tags:['分析中'],modules:m,prompt:'',status:'analyzing',createdAt:Date.now(),updatedAt:Date.now()};
+    assets.unshift(a); currentId=a.id;
+    addHistory('上传图片',a.name,'assets/logo_lotus.png');
+    save(); render();
+    // 关键：保存失败也不阻断请求，强制继续调用后端
+    analyze(a.id);
+  }
+}
+async function analyze(id){
+  const a=assets.find(x=>x.id===id); if(!a)return;
+  const s=cfg();
+  a.status='analyzing';
+  a.tags=['分析中'];
+  // 只在没有提示词时显示临时兜底，避免空白；AI回来后会覆盖
+  if(!a.prompt) a.prompt=promptFromModules(a.modules||fallbackModules(a.name));
+  save(); render();
+  try{
+    log('准备请求后端：'+a.name+' -> '+s.apiUrl+' / 图片大小 '+((a.dataUrl||'').length/1024/1024).toFixed(2)+'MB'); console.log('[PromptBloom] fetch analyze', a.name, s.apiUrl);
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),90000);
+    const res=await fetch(s.apiUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({filename:a.name,image:a.dataUrl,provider:s.apiProvider}),
+      signal:controller.signal
+    });
+    const raw=await res.text();
+    clearTimeout(timer);
+    log('后端返回：HTTP '+res.status+' / '+a.name+' / '+raw.slice(0,180).replace(/\n/g,' '));
+
+    if(!res.ok){
+      throw new Error('HTTP '+res.status+' '+raw.slice(0,300));
+    }
+
+    let data=null;
+    try{ data=JSON.parse(raw); }
+    catch(parseErr){
+      log('JSON解析失败，改用后端原文作为提示词：'+parseErr.message);
+      data={prompt:raw, modules:splitPrompt(raw), category:a.category||'未分类', tags:['AI原文','待拆分']};
+    }
+
+    // 兼容多种返回格式：直接返回、{data:{...}}、{result:{...}}
+    const body=(data && (data.data||data.result||data)) || {};
+    const incomingModules=(body.modules && typeof body.modules==='object') ? body.modules : {};
+    const modules={...fallbackModules(a.name), ...incomingModules};
+    let promptText='';
+    if(typeof body.prompt==='string') promptText=body.prompt.trim();
+    if(!promptText && typeof body.text==='string') promptText=body.text.trim();
+    if(!promptText && typeof body.content==='string') promptText=body.content.trim();
+    if(!promptText) promptText=promptFromModules(modules);
+
+    a.modules=modules;
+    a.prompt=promptText;
+    a.category=body.category || body.type || a.category || '未分类';
+    a.tags=Array.isArray(body.tags)&&body.tags.length ? body.tags.map(String).slice(0,10) : ['AI生成','分析完成'];
+    a.status='done';
+    a.updatedAt=Date.now();
+    addHistory('AI 分析完成',a.name,'assets/logo_lotus.png');
+    log('前端写入成功：'+a.name+' / prompt长度 '+a.prompt.length);
+  }catch(e){
+    // 真失败才进入这里；如果之前已经拿到过提示词，不再覆盖。
+    log('分析失败：'+(e.message||e));
+    if(!a.prompt){
+      a.modules=fallbackModules(a.name);
+      a.prompt=promptFromModules(a.modules);
+    }
+    a.tags=['API失败','可重试'];
+    a.status='failed';
+    a.updatedAt=Date.now();
+    addHistory('API 失败',a.name,'assets/logo_lotus.png');
+  }
+  save(); render();
+}
+function renderAssets(){let cats=CATS.map(c=>[c,c==='全部'?assets.length:assets.filter(a=>a.category===c).length]);let active=$('#assetCats')?.dataset.active||'全部';$('#assetCats').innerHTML=cats.map(([c,n])=>`<button class="${active===c?'active':''}" data-c="${c}">${c} ${n}</button>`).join('');$('#assetCats').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('#assetCats').dataset.active=b.dataset.c;renderAssets()});let q=($('#assetSearch')?.value||$('#globalSearch').value||'').toLowerCase();let list=assets.filter(a=>(active==='全部'||a.category===active)&&((a.name+a.category+(a.prompt||'')+(a.tags||[]).join('')).toLowerCase().includes(q)));let sort=$('#sortAsset')?.value||'new';if(sort==='name')list.sort((a,b)=>a.name.localeCompare(b.name));if(sort==='category')list.sort((a,b)=>(a.category||'').localeCompare(b.category||''));$('#assetGrid').innerHTML=list.map(makeCard).join('')||'<div class="panel" style="padding:40px;color:var(--muted)">暂无资产</div>';$('#assetGrid').querySelectorAll('.img-card').forEach(c=>c.onclick=()=>openDetail(c.dataset.id));}
+function openDetail(id){
+  let a=assets.find(x=>x.id===id);if(!a)return;currentId=id;
+  $('#assetDetail').innerHTML=`<div class="panel detail-card"><button class="close" id="closeDetail">×</button>${thumbHtml(a)}<div><h2>${esc(a.name)}</h2><p style="color:var(--muted)">${esc(a.category||'未分类')} · ${(a.tags||[]).join(' / ')}</p><div class="field"><label>自定义名称</label><input id="detailName" value="${esc(a.name)}" placeholder="可改成自己好识别的资产名称"></div><div class="field"><label>完整提示词</label><textarea readonly>${esc(a.prompt||promptFromModules(a.modules||{}))}</textarea></div><div class="module-grid">${KEYS.map(k=>`<div class="field"><label>${k}</label><input readonly value="${esc((a.modules||{})[k]||'')}"></div>`).join('')}</div><div class="actions"><button class="btn ghost" id="saveDetailName">保存名称</button><button class="btn yellow" id="detailCompose">加入合成台</button><button class="btn" id="detailEdit">编辑完整信息</button></div></div></div>`;
+  $('#assetDetail').classList.add('open');
+  $('#closeDetail').onclick=()=>$('#assetDetail').classList.remove('open');
+  $('#saveDetailName').onclick=()=>{a.name=$('#detailName').value.trim()||a.name;a.updatedAt=Date.now();save();render();openDetail(a.id)};
+  $('#detailCompose').onclick=()=>{addToCompose(a.prompt||promptFromModules(a.modules||{}));$('#assetDetail').classList.remove('open');showView('compose')};
+  $('#detailEdit').onclick=()=>{$('#assetDetail').classList.remove('open');showView('upload');renderEditor()}
+}
+
+const SUB_RULES={
+ '主体':{
+  '人物角色':['人','人物','角色','少女','女性','女子','女孩','男性','男子','青年','老人','儿童','战士','魔法师','精灵','神明','仙子','机器人','机甲','模特'],
+  '动物生物':['动物','猫','狗','龙','鸟','鹿','狐狸','蝴蝶','鱼','独角兽','生物','怪物','凤凰'],
+  '物品道具':['剑','刀','伞','灯笼','魔法书','相机','花朵','宝石','水晶','武器','道具','衣服','服饰','盔甲','皇冠','头饰'],
+  '建筑空间':['建筑','城堡','宫殿','庭院','塔楼','城市','房间','室内','门','窗','楼阁'],
+  '自然元素':['树','花','山','水','云','月','星','海','瀑布','森林','樱花','红枫'],
+  '其他主体':[]},
+ '场景':{
+  '自然环境':['森林','山','雪山','海','湖','瀑布','河流','峡谷','云海','樱花','红枫','月夜','天空','草地'],
+  '建筑空间':['宫殿','城堡','庭院','古塔','街道','室内','房间','神殿','阁楼','城市','建筑'],
+  '城市科幻':['赛博','霓虹','未来','都市','机甲','科技','太空','星际'],
+  '古风幻想':['古风','国风','仙侠','玄幻','幻想','梦境','异世界','魔法','浮空'],
+  '天气时间':['黄昏','夜晚','清晨','日落','雨','雪','雾','晨光','夕阳'],
+  '其他场景':[]},
+ '风格':{
+  '写实摄影':['真实','摄影','写实','胶片','商业','质感摄影','浅景深'],
+  '插画绘本':['插画','手绘','绘本','水彩','厚涂','油画','艺术'],
+  '3D/CG':['3D','CG','渲染','C4D','Octane','虚幻','立体','三维'],
+  '动漫二次元':['动漫','二次元','日系','国漫','赛璐璐','Q版','轻小说'],
+  '国风水墨':['国风','古风','水墨','工笔','敦煌','汉服','东方'],
+  '电影感/高级感':['电影','高级','大片','史诗','概念设计','梦幻','氛围感']},
+ '构图':{
+  '取景范围':['特写','半身','全身','远景','中景','近景'],
+  '画面结构':['中心构图','对称','三分','留白','动态构图','平衡','层次'],
+  '空间关系':['前景','中景','背景','纵深','透视','空间','居中'],
+  '视觉重点':['主体突出','焦点','视线引导','轮廓清晰','主次分明']},
+ '镜头':{
+  '镜头景别':['特写','近景','中景','远景','全景','半身','全身'],
+  '镜头运动':['推进','拉远','环绕','横移','跟随','俯拍','仰拍'],
+  '焦段视角':['广角','长焦','微距','鱼眼','平视','俯视','低角度'],
+  '画面稳定':['稳定','固定镜头','平视拍摄','清晰画面','镜头']},
+ '色彩':{
+  '主色调':['红','暗红','粉','金','蓝','紫','黑','白','灰','绿色','青色','暖色','冷色'],
+  '辅助色':['点缀','渐变','辅色','金色点缀','蓝紫','玫红'],
+  '色彩情绪':['高饱和','低饱和','柔和','复古','梦幻','明亮','深沉'],
+  '对比关系':['对比','撞色','统一','协调','层次','明暗']},
+ '材质':{
+  '服饰材质':['丝绸','纱','布料','皮革','盔甲','刺绣','服饰','衣料'],
+  '建筑材质':['石材','木材','金属','玻璃','砖瓦','大理石','墙面'],
+  '自然材质':['水面','云雾','树叶','花瓣','岩石','泥土'],
+  '光泽质感':['透明','反光','磨砂','细腻','纹理','颗粒','光滑','宝石','水晶']},
+ '光影':{
+  '光源方向':['正面光','侧光','逆光','顶光','轮廓光','背光'],
+  '光线强度':['柔光','硬光','强光','弱光','自然光','均匀光'],
+  '氛围光效':['氛围光','体积光','霓虹光','月光','黄昏光','暖光','冷光'],
+  '特殊光效':['发光','光环','星光','粒子','辉光','光斑']},
+ '用途':{
+  '角色设计':['角色','人物设定','立绘','角色参考','服装参考'],
+  '场景设计':['场景','背景','空间设计','环境参考','场景参考'],
+  '视频生成':['视频','首帧','尾帧','转场','分镜','镜头参考'],
+  '训练素材':['训练','素材','LoRA','数据集','风格参考']},
+ '负面提示词':{
+  '质量问题':['模糊','低清晰度','低质量','噪点','过曝','欠曝','色彩杂乱'],
+  '结构问题':['畸形','脸部崩坏','手部错误','比例错误','构图失衡','裁切'],
+  '画面问题':['水印','文字错误','多余文字','边缘不清','重复元素'],
+  '内容限制':['不要人物','无文字','无水印','无畸形']}
+};
+const KNOWN_TERMS=['少女','女性','角色','人物','机器人','机甲','魔法师','战士','神明','仙子','古风','国风','汉服','红衣','白衣','蓝色','蓝紫色','黑白灰','暗红','玫红','金色','银色','云海','星空','天空','月亮','日落','黄昏','森林','樱花','红枫','瀑布','湖泊','海边','山谷','宫殿','城堡','塔楼','庭院','城市','赛博城市','霓虹','水晶','宝石','玻璃','丝绸','纱裙','盔甲','刺绣','皇冠','头饰','灯笼','花朵','树木','水面','云雾','中心构图','对称构图','三分构图','中景','远景','特写','平视','俯视','广角','长焦','柔光','侧光','逆光','体积光','氛围光','粒子光','梦幻','电影感','厚涂','插画','水墨','3D渲染','CG','虚幻引擎','首帧','尾帧','分镜','训练素材','角色参考','场景参考'];
+function normalizeTagText(v){
+  return String(v||'')
+    .replace(/^(主体|场景|风格|构图|镜头|色彩|材质|光影|用途|负面提示词)\s*[：:]/,'')
+    .replace(/[，,。；;、\s]/g,'')
+    .replace(/[“”"']/g,'')
+    .trim();
+}
+function looksLikeSentence(v){
+  v=String(v||'').trim();
+  return v.length>=8 || /[的为呈现采用突出包含具有表现适合避免背景场景角色画面光线色彩材质构图镜头]/.test(v);
+}
+function readablePhrase(cat,value){
+  value=String(value||'').trim().replace(/^(主体|场景|风格|构图|镜头|色彩|材质|光影|用途|负面提示词)\s*[：:]/,'');
+  if(!value)return '';
+  if(looksLikeSentence(value))return value;
+  const map={
+    '主体':`画面主体为${value}`,
+    '场景':`场景设定为${value}`,
+    '风格':`整体呈现${value}风格`,
+    '构图':`采用${value}构图`,
+    '镜头':`镜头采用${value}视角`,
+    '色彩':`色彩以${value}为主`,
+    '材质':`材质体现${value}质感`,
+    '光影':`光影表现为${value}`,
+    '用途':`适合作为${value}参考`,
+    '负面提示词':`避免出现${value}`
+  };
+  return map[cat]||value;
+}
+function selKey(it){return encodeURIComponent([it.cat,it.sub,it.kind,normalizeTagText(it.value),it.value].join('||'))}
+function itemFromKey(k){let p=decodeURIComponent(k).split('||');return{cat:p[0]||'',sub:p[1]||'',kind:p[2]||'',norm:p[3]||'',value:p.slice(4).join('||')||''}}
+function uniq(arr){return [...new Set(arr.filter(Boolean).map(x=>String(x).trim()).filter(Boolean))]}
+function splitPieces(text){
+  return uniq(String(text||'')
+    .split(/[，,。；;\n]/)
+    .map(x=>x.trim().replace(/^(主体|场景|风格|构图|镜头|色彩|材质|光影|用途|负面提示词)\s*[：:]/,''))
+    .filter(x=>x.length>=4&&x.length<=36&&!['主体突出','画面清晰','高清','精致'].includes(x)))
+}
+function extractTerms(text){
+  let t=String(text||'');let out=[];
+  KNOWN_TERMS.forEach(k=>{if(t.includes(k))out.push(k)});
+  splitPieces(t).forEach(p=>{
+    if(p.length<=10&&!/[：:]/.test(p)&&!looksLikeSentence(p))out.push(p);
+  });
+  return uniq(out).slice(0,12)
+}
+function subFor(cat,text){let rules=SUB_RULES[cat]||{};let t=String(text||'');for(const [sub,ks] of Object.entries(rules)){if(ks.some(k=>t.includes(k)))return sub}return Object.keys(rules).slice(-1)[0]||'其他'}
+function collectComposeItems(){
+  const result={}; KEYS.forEach(cat=>{result[cat]={}; Object.keys(SUB_RULES[cat]||{'其他':[]}).forEach(s=>result[cat][s]=[])});
+  const add=(cat,sub,kind,value,source)=>{
+    value=String(value||'').trim(); 
+    if(!value||value==='暂无标签')return;
+    if(kind!=='名词/关键词') value=readablePhrase(cat,value);
+    if(value.length>120)value=value.slice(0,120)+'…';
+    const norm=normalizeTagText(value);
+    if(!norm||norm.length<2)return;
+    const arr=result[cat]?.[sub]||(result[cat][sub]=[]);
+    const existIndex=arr.findIndex(x=>x.norm===norm || normalizeTagText(x.value)===norm);
+    if(existIndex>=0){
+      // 多张图产生相同标签时合并成一条；如果新句子更完整，则替换为更完整的句子
+      if(value.length>arr[existIndex].value.length){
+        arr[existIndex]={cat,sub,kind,value,source,norm};
+      }
+      return;
+    }
+    // 若同类下已有完全包含关系的短标签，优先保留更完整的句子
+    const containIndex=arr.findIndex(x=>{
+      const xn=x.norm||normalizeTagText(x.value);
+      return norm.length>5 && xn.length>5 && (norm.includes(xn)||xn.includes(norm));
+    });
+    if(containIndex>=0){
+      if(value.length>arr[containIndex].value.length) arr[containIndex]={cat,sub,kind,value,source,norm};
+      return;
+    }
+    arr.push({cat,sub,kind,value,source,norm});
+  };
+  const list=assets.length?assets:[];
+  list.forEach(a=>{
+    const mods=a.modules||splitPrompt(a.prompt||'');
+    KEYS.forEach(cat=>{
+      const val=(mods&&mods[cat])||'';
+      if(val){
+        const sub=subFor(cat,val);
+        add(cat,sub,'描述句',val,a.name);
+        splitPieces(val).forEach(p=>add(cat,subFor(cat,p),'短句',readablePhrase(cat,p),a.name));
+        extractTerms(val).forEach(p=>add(cat,subFor(cat,p),'名词/关键词',p,a.name));
+      }
+    });
+    (a.tags||[]).forEach(tag=>{
+      for(const cat of KEYS){ 
+        const sub=subFor(cat,tag); 
+        if(sub && sub.indexOf('其他')<0){
+          add(cat,sub,'短句',readablePhrase(cat,tag),a.name);
+          if(String(tag).trim().length<=12) add(cat,sub,'名词/关键词',tag,a.name);
+          break;
+        } 
+      }
+    });
+  });
+  // 没有上传内容时，给少量示例，不影响真实使用
+  if(!assets.length){Object.entries(COMPOSE).forEach(([cat,groups])=>Object.entries(groups).forEach(([sub,vals])=>vals.forEach(v=>{add(cat,subFor(cat,v),'短句',v,'示例');add(cat,subFor(cat,v),'名词/关键词',v,'示例')})))}
+  return result;
+}
+function renderCompose(){
+  const mainKeys=['全部',...KEYS];
+  $('#composeTabs').innerHTML=mainKeys.map(k=>`<button class="cat-filter ${composeMain===k?'active':''}" data-k="${k}">${k}</button>`).join('')+
+  '<button class="compose-toggle-all" id="expandAllCompose">全部展开</button><button class="compose-toggle-all" id="collapseAllCompose">全部收起</button>';
+  $('#composeTabs').querySelectorAll('.cat-filter').forEach(b=>b.onclick=()=>{composeMain=b.dataset.k;renderCompose()});
+  $('#expandAllCompose').onclick=()=>{Object.keys(SUB_RULES).forEach(cat=>Object.keys(SUB_RULES[cat]).forEach(sub=>{composeExpanded[cat+'|'+sub]=true; composeCollapsed[cat+'|'+sub]=false;}));renderCompose()};
+  $('#collapseAllCompose').onclick=()=>{Object.keys(SUB_RULES).forEach(cat=>Object.keys(SUB_RULES[cat]).forEach(sub=>{composeCollapsed[cat+'|'+sub]=true;}));renderCompose()};
+  const grouped=collectComposeItems(); const cats=composeMain==='全部'?KEYS:[composeMain]; let html='<div class="compose-note">提示：每个二级分类会优先保留完整描述句，并自动合并多张图片中重复的提示词；同时保留少量名词 / 关键词。长内容可展开或收回。</div>';
+  cats.forEach(cat=>{
+    const subObj=grouped[cat]||{}; const total=Object.values(subObj).flat().length;
+    html+=`<div class="compose-section"><div class="compose-section-head"><h3>${cat}</h3><span class="count">${total?total+' 条可用元素':'暂无可用元素'} · 来自上传图片拆分字段</span></div><div class="subgrid">`;
+    Object.keys(SUB_RULES[cat]||subObj).forEach(sub=>{
+      const key=cat+'|'+sub; const arr=subObj[sub]||[]; const collapsed=composeCollapsed[key];
+      const phrases=arr.filter(x=>x.kind!=='名词/关键词'); const terms=arr.filter(x=>x.kind==='名词/关键词');
+      const pShow=composeExpanded[key]?phrases:phrases.slice(0,2); const tShow=composeExpanded[key]?terms:terms.slice(0,8); const hidden=(phrases.length-pShow.length)+(terms.length-tShow.length);
+      html+=`<div class="subbox"><div class="subbox-head" data-subtoggle="${key}"><span>${sub}</span><small>${arr.length} 条 ${collapsed?'＋':'⌃'}</small></div>`;
+      if(!collapsed){html+='<div class="subbox-body">';
+        if(arr.length){
+          if(phrases.length){html+='<div class="mini-label">描述句 / 短句</div><div class="phrase-list">'+pShow.map(it=>{const k=selKey(it);return `<button class="tag-btn phrase-chip ${selected.includes(k)?'active':''}" title="${esc(it.value)}" data-key="${k}">${esc(it.value)}</button>`}).join('')+'</div>'}
+          if(terms.length){html+='<div class="mini-label">名词 / 关键词</div><div class="term-list">'+tShow.map(it=>{const k=selKey(it);return `<button class="tag-btn term-chip ${selected.includes(k)?'active':''}" title="${esc(it.value)}" data-key="${k}">${esc(it.value)}</button>`}).join('')+'</div>'}
+          if(hidden>0){html+=`<div class="tag-more-row"><button class="tag-more" data-more="${key}">展开全部 ${hidden}</button>`; if(composeExpanded[key])html+=`<button class="tag-collapse" data-collapse="${key}">收回</button>`; html+='</div>';}
+        }else html+='<span class="empty-tag">暂无标签</span>';
+        html+='</div>';
+      }
+      html+='</div>';
+    });
+    html+='</div></div>';
+  });
+  $('#composeGroups').innerHTML=html;
+  $('#composeGroups').querySelectorAll('.tag-btn').forEach(b=>b.onclick=()=>{let k=b.dataset.key;if(selected.includes(k))selected=selected.filter(x=>x!==k);else selected.push(k);updateComposeText();renderCompose();});
+  $('#composeGroups').querySelectorAll('[data-more]').forEach(b=>b.onclick=e=>{e.stopPropagation();composeExpanded[b.dataset.more]=true;renderCompose();});$('#composeGroups').querySelectorAll('[data-collapse]').forEach(b=>b.onclick=e=>{e.stopPropagation();composeExpanded[b.dataset.collapse]=false;renderCompose();});
+  $('#composeGroups').querySelectorAll('[data-subtoggle]').forEach(h=>h.onclick=()=>{composeCollapsed[h.dataset.subtoggle]=!composeCollapsed[h.dataset.subtoggle];renderCompose();});
+  $('#selectedTags').innerHTML=selected.map(k=>{let it=itemFromKey(k);return `<span data-remove="${k}">${esc(it.value)}</span>`}).join('');
+  $('#selectedTags').querySelectorAll('[data-remove]').forEach(s=>s.onclick=()=>{selected=selected.filter(x=>x!==s.dataset.remove);updateComposeText();renderCompose();});
+  updateComposeText();
+}
+function addToCompose(text){$('#composeText').value=($('#composeText').value?$('#composeText').value+'，':'')+text;addHistory('发送到合成台','提示词合成','assets/logo_lotus.png');}
+function updateComposeText(){
+  const grouped={};
+  selected.map(itemFromKey).forEach(it=>{if(!grouped[it.cat])grouped[it.cat]=[]; if(it.value&&!grouped[it.cat].includes(it.value))grouped[it.cat].push(it.value)});
+  const parts=[];
+  KEYS.forEach(cat=>{if(grouped[cat]&&grouped[cat].length){
+    if(cat==='负面提示词') parts.push('负面提示词：'+grouped[cat].join('，'));
+    else parts.push(cat+'：'+grouped[cat].join('，'));
+  }});
+  $('#composeText').value=parts.join('；');
+}
+function renderHistory(){let box=$('#historyList');if(!box)return;box.innerHTML=history.slice(0,12).map(h=>`<div class="history-item"><img src="${h.img||'assets/logo_lotus.png'}"><div><b>${h.type}</b><br><span style="color:var(--muted)">${h.name||''} · ${h.time}</span></div></div>`).join('')||'<p style="color:var(--muted)">暂无历史记录</p>'}
+function setApiState(ok,text){$('#apiDot').className='dot '+(ok?'ok':text?'err':'');$('#apiText').textContent=text||'API 未测试';let side=$('#sideApiState');if(side)side.textContent=text||'API 未测试';}
+async function testApi(){let s=cfg();try{let url=s.apiUrl.replace('/api/analyze-image','/api/health');let r=await fetch(url);let t=await r.text();setApiState(r.ok,'API 连接正常');log('API 连接正常：'+t.slice(0,120))}catch(e){setApiState(false,'API 未连接');log('API 连接失败：'+e.message)}}
+function exportJSON(){let blob=new Blob([JSON.stringify({assets,history},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='promptbloom-data.json';a.click();URL.revokeObjectURL(url)}
+function importJSON(f){let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);assets=d.assets||[];history=d.history||[];currentId=assets[0]?.id||null;save();render();log('导入成功')}catch(e){log('导入失败：'+e.message)}};r.readAsText(f,'utf-8')}
+function createManualAsset(){
+  let a={
+    id:uid(),
+    name:'新建提示词',
+    dataUrl:'',
+    hasImage:false,
+    category:'未分类',
+    tags:['手动提示词'],
+    modules:{},
+    prompt:'',
+    status:'done',
+    createdAt:Date.now(),
+    updatedAt:Date.now()
+  };
+  assets.unshift(a);
+  currentId=a.id;
+  addHistory('新建提示词',a.name,'assets/logo_lotus.png');
+  save();
+  render();
+  showView('upload')
+}
+function bind(){ $$('.nav button').forEach(b=>b.onclick=()=>showView(b.dataset.view));$('#uploadTop').onclick=()=>showView('upload');$('#uploadLeftBtn').onclick=()=>$('#fileInput').click(); if($('#uploadNewPromptBtn')) $('#uploadNewPromptBtn').onclick=createManualAsset;$('#newPromptTop').onclick=createManualAsset;$('#fileInput').onchange=e=>addFiles(e.target.files);$('#dropZone').ondragover=e=>{e.preventDefault();$('#dropZone').classList.add('drag')};$('#dropZone').ondragleave=()=>$('#dropZone').classList.remove('drag');$('#dropZone').ondrop=e=>{e.preventDefault();$('#dropZone').classList.remove('drag');addFiles(e.dataTransfer.files)};$('#globalSearch').oninput=()=>{renderHome();renderAssets()};$('#assetSearch').oninput=renderAssets;$('#sortAsset').onchange=renderAssets;$('#copyCompose').onclick=()=>navigator.clipboard.writeText($('#composeText').value);$('#exportCompose').onclick=()=>{let text=$('#composeText').value;if(!text)return;let blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='合成提示词.txt';a.click();URL.revokeObjectURL(url)};$('#saveSettings').onclick=()=>{localStorage.setItem(CFG,JSON.stringify({apiUrl:$('#apiUrl').value.trim(),apiProvider:$('#apiProvider').value}));log('已保存 API 设置');testApi()};$('#testApi').onclick=testApi;$('#exportData').onclick=exportJSON;$('#importData').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>e.target.files[0]&&importJSON(e.target.files[0]);$('#wipeData').onclick=()=>{if(confirm('清空全部数据？')){['pb_v15_assets','pb_v15_history','pb_v18_assets','pb_v18_history','pb_v19_assets','pb_v19_history','pb_v20_assets','pb_v20_history','pb_v21_assets','pb_v21_history','pb_v22_assets','pb_v22_history','pb_v24_assets','pb_v24_history'].forEach(k=>localStorage.removeItem(k));assets=[];history=[];currentId=null;initDemos();load();render();}}}
+load();bind();render();testApi();
+</script>
+</body></html>
